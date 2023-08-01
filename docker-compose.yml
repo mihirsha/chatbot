@@ -1,14 +1,14 @@
 version: '3'
 
 networks:
-  fastapi-networks:
+  chatbot-network:
     driver: bridge
 
 services:
 
-  fastapi:
+  chatbot:
     image: ${DOCKER_MAIN_IMAGE}
-    container_name: rental_service
+    container_name: chatbot
     depends_on:
       - db
     ports:
@@ -16,7 +16,7 @@ services:
     env_file:
       - ./.env
     networks:
-      - fastapi-networks
+      - chatbot-network
     volumes:
       - static:/static
       - ./:/usr/src/app
@@ -29,13 +29,11 @@ services:
     ports:
       - '80:80'
     depends_on:
-      - fastapi
+      - chatbot
     networks:
-      - fastapi-networks
+      - chatbot-network
 
   db:
-    depends_on:
-      - db_test
     image: postgres
     container_name: postgres
     restart: always
@@ -46,20 +44,7 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     networks:
-      - fastapi-networks
-
-  db_test:
-    image: postgres
-    container_name: postgres_test
-    restart: always
-    env_file:
-      - ./.env
-    environment:
-      - POSTGRES_DB=rental_postgres_test
-    ports:
-      - '7878:5432'
-    networks:
-      - fastapi-networks
+      - chatbot-network
 
 volumes:
   static:

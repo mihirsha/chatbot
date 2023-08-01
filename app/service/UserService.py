@@ -2,22 +2,17 @@ from app.schema.UserSchema import Signup
 from sqlalchemy.orm import Session
 from fastapi import status, HTTPException
 from app.models import User
-from app.utils import hash, validMobileNumber
+from app.utils import hash
 
 
 class UserService:
 
     def signup(user: Signup,  db:  Session):
-        if (user.email == None or user.email.strip() == "" or user.phoneNumber == None or
-            user.phoneNumber.strip() == "" or user.name == None or user.name.strip() == "" or
+        if (user.email == None or user.email.strip() == "" or user.name == None or user.name.strip() == "" or
                 user.password == None or user.password.strip() == ""):
 
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE, detail=f"Incomplete information")
-
-        if not validMobileNumber(user.phoneNumber):
-            raise HTTPException(
-                status_code=status.HTTP_406_NOT_ACCEPTABLE, detail=f"Invalid phone no.")
 
         user_fetched = db.query(User).filter(user.email == User.email).first()
 

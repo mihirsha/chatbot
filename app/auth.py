@@ -26,11 +26,10 @@ def login(user_credentials: Userlogin, db:  Session = Depends(get_db)):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials")
 
-    access_token = create_access_token(data={"user_id": user.id})
+    access_token = create_access_token(data={"user_id": str(user.id)})
 
     return UserOutLogin(
         token=access_token,
         name=user.name,
-        phoneNumber=user.phoneNumber,
         email=user.email
     )
